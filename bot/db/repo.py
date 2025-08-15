@@ -93,8 +93,14 @@ def _upsert_chat_sync(db_path: str, st: ChatState) -> None:
 
 def _update_fields_sync(db_path: str, chat_id: int, **fields) -> None:
     allowed = {"coin_id", "symbol_okx", "tp_pct", "sl_pct", "modo", "precision_on", "alerts_on", "dark_mode"}
+    unknown = set(fields) - allowed
+    if unknown:
+        names = ", ".join(sorted(unknown))
+        raise ValueError(f"Unknown field(s): {names}")
+
     payload = {k: v for k, v in fields.items() if k in allowed}
     if not payload:
+        # Nothing to update – return early without touching the database.
         return
 
     # asegurar existencia
