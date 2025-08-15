@@ -18,3 +18,13 @@ async def test_update_fields_creates_and_updates_record(tmp_path):
     assert chat is not None
     assert chat.chat_id == chat_id
     assert chat.alerts_on == 1
+
+
+@pytest.mark.asyncio
+async def test_update_fields_rejects_unknown_field(tmp_path):
+    """Passing an unknown field should raise a clear error."""
+    db_path = tmp_path / "test.db"
+    await repo.ensure_schema(str(db_path))
+
+    with pytest.raises(ValueError):
+        await repo.update_fields(str(db_path), 1, invalid_field=True)
