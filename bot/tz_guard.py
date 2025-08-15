@@ -2,8 +2,8 @@ from __future__ import annotations
 import os
 
 def ensure_apscheduler_tz_compat() -> None:
-    # Desactiva con APSCHE_TZ_CHECK=0 si ya controlaste el entorno.
-    if os.getenv("APSCHE_TZ_CHECK", "1") not in {"1", "true", "True"}:
+    # Desactiva con APSCHED_TZ_CHECK=0 si ya controlaste el entorno.
+    if os.getenv("APSCHED_TZ_CHECK", "1") not in {"1", "true", "True"}:
         return
 
     import importlib.metadata as m
