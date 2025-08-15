@@ -3,12 +3,16 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from ...config import Config
 from ...db import repo
+from ...db.models import ChatState
 
 async def alerts_cmd(update: Update, ctx: ContextTypes.DEFAULT_TYPE):
     cfg: Config = ctx.application.bot_data["config"]
     chat_id = update.effective_chat.id
     if not ctx.args:
         st = await repo.get_chat(cfg.db_path, chat_id)
+        if not st:
+            st = ChatState(chat_id=chat_id)
+            await repo.upsert_chat(cfg.db_path, st)
         await update.message.reply_text(f"Alerts: {'on' if st.alerts_on else 'off'}")
         return
     v = ctx.args[0].strip().lower()
